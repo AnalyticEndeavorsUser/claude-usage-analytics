@@ -1,6 +1,6 @@
 # Claude Usage Analytics
 
-![Version](https://img.shields.io/badge/version-1.1.8-blue)
+![Version](https://img.shields.io/badge/version-1.1.9-blue)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.95%2B-007ACC)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
@@ -188,6 +188,40 @@ See the backfill section in the extension's dashboard for detailed instructions.
 
 ---
 
+## External Usage Data (Copilot, Forge, etc.)
+
+Import usage data from any external AI tool into your analytics dashboard. Create a JSON file at `~/.claude/external-additions.json`:
+
+```json
+{
+  "source": "copilot-cli",
+  "lastUpdated": "2026-04-09T12:00:00Z",
+  "rows": [
+    { "date": "2026-04-01", "cost": 1.23, "messages": 15, "tokens": 50000, "sessions": 3 }
+  ],
+  "modelRows": [
+    {
+      "date": "2026-04-01",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 30000,
+      "output_tokens": 10000,
+      "cache_read_tokens": 8000,
+      "cache_write_tokens": 2000
+    }
+  ]
+}
+```
+
+External data merges seamlessly into all dashboard views, streaks, and lifetime totals. The JSON file is the source of truth and is re-loaded on every VS Code restart.
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `source` | Yes | Identifier for the data source (e.g., "copilot-cli") |
+| `rows` | Yes | Daily aggregate usage data |
+| `modelRows` | No | Per-model token breakdown for accurate cost calculation |
+
+---
+
 ## GitHub Gist Backup
 
 Sync your analytics data across multiple machines using GitHub Gist.
@@ -246,7 +280,7 @@ code --install-extension analyticendeavors.claude-usage-analytics
 Download the latest `.vsix` from the [Releases](https://github.com/analyticendeavors/claude-usage-analytics/releases) page and install manually:
 
 ```bash
-code --install-extension claude-usage-analytics-1.1.8.vsix
+code --install-extension claude-usage-analytics-1.1.9.vsix
 ```
 
 ---

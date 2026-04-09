@@ -2,6 +2,20 @@
 
 All notable changes to the Claude Usage Analytics extension will be documented in this file.
 
+## [1.1.9] - 2026-04-09
+
+### Added
+- **External additions sidecar framework** - Import usage data from any external AI tool (Copilot CLI, Forge CLI, etc.) via a JSON file at `~/.claude/external-additions.json`. External data merges seamlessly into all dashboard views, streaks, and totals.
+
+### Fixed
+- **Incorrect model pricing** - Reverted Haiku 3.5 to correct $0.80/$4.00 (was wrongly changed to $1/$5). Fixed Opus 4.5 from $15/$75 to correct $5/$25. Added missing Opus 4.1 and Sonnet 4.5 model entries.
+- **Haiku pricing missing from cost calculations** - Added Haiku tier pricing (4.5, 3.5, 3) to both dataProvider.ts and database.ts. Previously Haiku usage fell through to Sonnet pricing ($3/$15), overcharging by 3x or more.
+- **Opus 4.5/4.6 overcharged in historical costs** - Split Opus pricing into new ($5/$25 for 4.5/4.6) vs legacy ($15/$75 for 4.1/4/3). Previously all Opus models were charged at the legacy rate.
+- **README claimed open source** - Removed source code references, build-from-source instructions, and Development section. Extension is free forever but source is not distributed.
+- **CHANGELOG claimed non-existent weeklyBudget feature** - Corrected to only reference `dailyBudget`
+- **Broken BACKFILL_GUIDE.md link** - Replaced with reference to dashboard instructions
+- **README version badge** - Updated from 1.1.5 to 1.1.9
+
 ## [1.1.8] - 2026-01-10
 
 ### Fixed
