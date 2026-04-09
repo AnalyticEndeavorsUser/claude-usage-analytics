@@ -32,3 +32,4 @@ yarn.lock
 *.log
 npm-debug.log*
 __pycache__/
+/.playwright-mcp
