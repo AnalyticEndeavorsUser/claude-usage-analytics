@@ -64,7 +64,7 @@ All notable changes to the Claude Usage Analytics extension will be documented i
 - **Local history stats** - "Local History" totals now include full data from your local SQLite database, not just the last 30 days
 - **7 new achievements** - Token Titan (1M+ tokens), $100 Club, $500 Spender, $1K Whale, Refactor Pro, Refactor King, Weekend Warrior
 - **Export to CSV/JSON** - Export your usage data via dashboard button or view title menu
-- **Budget tracking** - New `dailyBudget` and `weeklyBudget` settings with status bar color coding (green/yellow/red)
+- **Budget tracking** - New `dailyBudget` setting with status bar color coding (green/yellow/red)
 - **Cost alerts** - New `costAlertThreshold` setting triggers VS Code notifications when daily cost exceeds threshold
 - **Date range filter** - Filter dashboard stats by Last 7 days, Last 30 days, This Month, or All Time
 - **Session breakdown** - New section in Messages tab showing recent sessions with project, messages, tokens, and cost

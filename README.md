@@ -1,6 +1,6 @@
 # Claude Usage Analytics
 
-![Version](https://img.shields.io/badge/version-1.1.5-blue)
+![Version](https://img.shields.io/badge/version-1.1.8-blue)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.95%2B-007ACC)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
@@ -125,7 +125,7 @@ This extension prioritizes your privacy:
 | **Data Location** | All data stays on your machine |
 | **Network Calls** | None — fully offline operation |
 | **Telemetry** | None — zero tracking or analytics |
-| **Open Source** | Full source code available for audit |
+| **Free Forever** | Always free to use; source is not distributed to prevent repackaging and resale |
 
 **Data Sources:**
 - `~/.claude/stats-cache.json` — Token usage and model statistics (Claude Code's rolling 30-day window, updated periodically by Claude Code)
@@ -184,7 +184,7 @@ This imports:
 
 **Why backfill?** The extension can only track code blocks and personality stats from the day you install it. Running the backfill script imports your complete history from Claude.ai, giving you accurate lifetime statistics.
 
-See [BACKFILL_GUIDE.md](BACKFILL_GUIDE.md) for detailed instructions.
+See the backfill section in the extension's dashboard for detailed instructions.
 
 ---
 
@@ -241,24 +241,12 @@ Search for **"Claude Usage Analytics"** in the VS Code Extensions panel, or inst
 code --install-extension analyticendeavors.claude-usage-analytics
 ```
 
-### Option 2: From Source
+### Option 2: From .vsix
+
+Download the latest `.vsix` from the [Releases](https://github.com/analyticendeavors/claude-usage-analytics/releases) page and install manually:
 
 ```bash
-# Clone the repository
-git clone https://github.com/analyticendeavors/claude-usage-analytics.git
-cd claude-usage-analytics
-
-# Install dependencies
-npm install
-
-# Compile TypeScript
-npm run compile
-
-# Package the extension
-npx vsce package
-
-# Install the generated .vsix
-code --install-extension claude-usage-analytics-1.1.0.vsix
+code --install-extension claude-usage-analytics-1.1.8.vsix
 ```
 
 ---
@@ -270,7 +258,7 @@ code --install-extension claude-usage-analytics-1.1.0.vsix
 | **VS Code** | Version 1.95.0 or higher |
 | **Claude Code CLI** | Must be installed and authenticated |
 | **Operating System** | Windows 10/11, macOS, or Linux |
-| **Node.js** | v18+ (for building from source) |
+| **Node.js** | v18+ (included with VS Code) |
 
 ### Pre-requisites
 
@@ -357,9 +345,13 @@ claude-usage-analytics/
 Ensure Claude Code CLI is installed and you've used it at least once. The extension reads from `~/.claude/stats-cache.json` which is created after your first Claude Code session.
 
 ### How accurate are the cost calculations?
-Costs use model-specific pricing:
-- **Claude Opus 4.5**: $15/1M input, $75/1M output, $18.75/1M cache write, $1.50/1M cache read
-- **Claude Sonnet**: $3/1M input, $15/1M output
+Costs use model-specific pricing from [modelPricing.json](modelPricing.json):
+- **Claude Opus 4.6 / 4.5**: $5/1M input, $25/1M output, $6.25/1M cache write, $0.50/1M cache read
+- **Claude Opus 4.1 / 4 / 3**: $15/1M input, $75/1M output, $18.75/1M cache write, $1.50/1M cache read
+- **Claude Sonnet (all versions)**: $3/1M input, $15/1M output, $3.75/1M cache write, $0.30/1M cache read
+- **Claude Haiku 4.5**: $1/1M input, $5/1M output, $1.25/1M cache write, $0.10/1M cache read
+- **Claude Haiku 3.5**: $0.80/1M input, $4/1M output, $1/1M cache write, $0.08/1M cache read
+- **Claude Haiku 3**: $0.25/1M input, $1.25/1M output
 
 Today's cost is calculated in real-time from conversation files for maximum accuracy.
 
@@ -415,30 +407,9 @@ Personality analysis requires conversation history in `~/.claude/projects/`. If 
 
 ---
 
-## Development
+## Contributing
 
-### Setup
-
-```bash
-git clone https://github.com/analyticendeavors/claude-usage-analytics.git
-cd claude-usage-analytics
-npm install
-```
-
-### Build Commands
-
-```bash
-npm run compile    # Build once
-npm run watch      # Watch mode for development
-npm run lint       # Run ESLint
-npx vsce package   # Create .vsix package
-```
-
-### Testing Locally
-
-1. Open the project in VS Code
-2. Press `F5` to launch Extension Development Host
-3. The extension will load in the new window
+This extension is free and always will be. Source code is not publicly distributed to prevent unauthorized repackaging and resale. If you'd like to report a bug or request a feature, please use the [Issues](https://github.com/analyticendeavors/claude-usage-analytics/issues) page.
 
 ---
 
