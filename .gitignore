@@ -1,34 +1,18 @@
-# Source code (private - install from VS Code Marketplace)
-src/
-out/
-tools/
-*.ts
-*.py
-*.bat
-package.json
-tsconfig.json
-.vscodeignore
-BACKFILL_GUIDE.md
-
-# Dependencies
 node_modules/
-
-# Package files
+__pycache__/
+*.db
+*.sqlite
 *.vsix
-
-# Editor settings
-.vscode/
-
-# OS files
+*.imported
+backfill-results*.json
+conversation-stats-cache.json
+forge-active-dates.json
+live-today-stats.json
+stats-cache.json
 .DS_Store
 Thumbs.db
-
-# Lock files
+*.log
+npm-debug.log*
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
-
-# Logs
-*.log
-npm-debug.log*
-__pycache__/
