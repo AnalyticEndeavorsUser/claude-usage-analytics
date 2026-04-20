@@ -59,7 +59,8 @@ function setLiveStats(stats) {
         date: stats.date,
         cost: stats.cost,
         messages: stats.messages,
-        tokens: stats.totalTokens || stats.tokens || 0
+        tokens: stats.totalTokens || stats.tokens || 0,
+        models: stats.models || {}
     };
     // Persist to SQLite for accurate historical data
     if (dbInitialized && stats.models) {
@@ -483,6 +484,30 @@ function getUsageData() {
             defaultData.allTime.cacheTokens = 0; // Can't determine from daily breakdown
             defaultData.models = models.sort((a, b) => b.tokens - a.tokens).slice(0, 5);
             // Note: Cache efficiency is already calculated from modelUsage above, don't overwrite
+        }
+        // === SUPPLEMENT MODEL PIE CHART with live scan data ===
+        // Catches models missing from stats-cache (e.g. newly released models like claude-opus-4-7)
+        if (liveStats && liveStats.models && Object.keys(liveStats.models).length > 0) {
+            const existingNames = new Set(defaultData.models.map(m => m.name));
+            let supplemented = false;
+            for (const [modelName, ms] of Object.entries(liveStats.models)) {
+                if (modelName === '<synthetic>') continue;
+                const displayName = formatModelName(modelName);
+                if (!existingNames.has(displayName)) {
+                    const tokens = (ms.inputTokens || 0) + (ms.outputTokens || 0) + (ms.cacheReadTokens || 0) + (ms.cacheWriteTokens || 0);
+                    if (tokens > 0) {
+                        defaultData.models.push({ name: displayName, tokens, percentage: 0, color: getModelColor(modelName) });
+                        supplemented = true;
+                    }
+                }
+            }
+            if (supplemented) {
+                const grandTotal = defaultData.models.reduce((s, m) => s + m.tokens, 0);
+                for (const m of defaultData.models) {
+                    m.percentage = grandTotal > 0 ? (m.tokens / grandTotal) * 100 : 0;
+                }
+                defaultData.models = defaultData.models.sort((a, b) => b.tokens - a.tokens).slice(0, 5);
+            }
         }
         // === DAILY HISTORY (from dailyActivity + dailyModelTokens) ===
         const todayStr = getLocalDateString();
