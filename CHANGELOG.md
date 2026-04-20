@@ -2,6 +2,20 @@
 
 All notable changes to the Claude Usage Analytics extension will be documented in this file.
 
+## [1.1.9] - 2026-04-09
+
+### Added
+- **External additions sidecar framework** - Import usage data from any external AI tool (Copilot CLI, Forge CLI, etc.) via a JSON file at `~/.claude/external-additions.json`. External data merges seamlessly into all dashboard views, streaks, and totals.
+
+### Fixed
+- **Incorrect model pricing** - Reverted Haiku 3.5 to correct $0.80/$4.00 (was wrongly changed to $1/$5). Fixed Opus 4.5 from $15/$75 to correct $5/$25. Added missing Opus 4.1 and Sonnet 4.5 model entries.
+- **Haiku pricing missing from cost calculations** - Added Haiku tier pricing (4.5, 3.5, 3) to both dataProvider.ts and database.ts. Previously Haiku usage fell through to Sonnet pricing ($3/$15), overcharging by 3x or more.
+- **Opus 4.5/4.6 overcharged in historical costs** - Split Opus pricing into new ($5/$25 for 4.5/4.6) vs legacy ($15/$75 for 4.1/4/3). Previously all Opus models were charged at the legacy rate.
+- **README claimed open source** - Removed source code references, build-from-source instructions, and Development section. Extension is free forever but source is not distributed.
+- **CHANGELOG claimed non-existent weeklyBudget feature** - Corrected to only reference `dailyBudget`
+- **Broken BACKFILL_GUIDE.md link** - Replaced with reference to dashboard instructions
+- **README version badge** - Updated from 1.1.5 to 1.1.9
+
 ## [1.1.8] - 2026-01-10
 
 ### Fixed
@@ -64,7 +78,7 @@ All notable changes to the Claude Usage Analytics extension will be documented i
 - **Local history stats** - "Local History" totals now include full data from your local SQLite database, not just the last 30 days
 - **7 new achievements** - Token Titan (1M+ tokens), $100 Club, $500 Spender, $1K Whale, Refactor Pro, Refactor King, Weekend Warrior
 - **Export to CSV/JSON** - Export your usage data via dashboard button or view title menu
-- **Budget tracking** - New `dailyBudget` and `weeklyBudget` settings with status bar color coding (green/yellow/red)
+- **Budget tracking** - New `dailyBudget` setting with status bar color coding (green/yellow/red)
 - **Cost alerts** - New `costAlertThreshold` setting triggers VS Code notifications when daily cost exceeds threshold
 - **Date range filter** - Filter dashboard stats by Last 7 days, Last 30 days, This Month, or All Time
 - **Session breakdown** - New section in Messages tab showing recent sessions with project, messages, tokens, and cost
