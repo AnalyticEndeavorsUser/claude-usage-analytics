@@ -1,20 +1,29 @@
-# Source code (private - install from VS Code Marketplace)
+# Source code (TypeScript not distributed)
 src/
-out/
-tools/
 *.ts
-*.py
-*.bat
-package.json
 tsconfig.json
 .vscodeignore
-BACKFILL_GUIDE.md
+
+# Compiled output (not distributed)
+out/
+
+# Build artifacts
+*.vsix
+build.bat
+
+# Python scripts (not distributed)
+*.py
 
 # Dependencies
 node_modules/
 
 # Package files
-*.vsix
+package.json
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
 
 # Editor settings
 .vscode/
@@ -23,13 +32,10 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Lock files
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
-
 # Logs
 *.log
 npm-debug.log*
 __pycache__/
+
+# Dev tools
 /.playwright-mcp
