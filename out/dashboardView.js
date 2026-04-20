@@ -195,7 +195,7 @@ class DashboardViewProvider {
             // Day label below bar
             bars += `<text x="${x + barWidth / 2}" y="${height - 2}" text-anchor="middle" fill="var(--vscode-descriptionForeground)" font-size="8">${dayLabel}</text>`;
         }
-        return `<svg width="${width}" height="${height}" style="width:100%;">${bars}</svg>`;
+        return `<svg width="${width}" height="${height}" style="width:100%;" role="img" aria-label="Daily ${chartView} activity over the last 14 days">${bars}</svg>`;
     }
     // Helper to get local date string (YYYY-MM-DD) without timezone issues
     getLocalDateString(date = new Date()) {
@@ -282,7 +282,7 @@ class DashboardViewProvider {
         }
         const width = leftPadding + cols * (cellSize + cellGap);
         const height = topPadding + rows * (cellSize + cellGap);
-        return `<svg width="${width}" height="${height}" style="display:block;margin:0 auto;">${monthLabels.join('')}${labels.join('')}${cells.join('')}</svg>`;
+        return `<svg width="${width}" height="${height}" style="display:block;margin:0 auto;" role="img" aria-label="Activity heatmap showing message frequency over the last 90 days">${monthLabels.join('')}${labels.join('')}${cells.join('')}</svg>`;
     }
     getModelPieChart(data) {
         if (data.models.length === 0)
@@ -306,7 +306,7 @@ class DashboardViewProvider {
             }
             startAngle = endAngle;
         }
-        return `<svg width="${size}" height="${size}" style="display:block;margin:0 auto;">${paths}</svg>`;
+        return `<svg width="${size}" height="${size}" style="display:block;margin:0 auto;" role="img" aria-label="Model usage distribution pie chart">${paths}</svg>`;
     }
     getOverviewTab(data) {
         const barChart = this.getBarChartSvg(data, this._chartView);
@@ -322,12 +322,12 @@ class DashboardViewProvider {
             <div class="section">
                 <div class="section-header-bar account-total">
                     <span>Account Total</span>
-                    <div class="data-source-toggle">
-                        <button class="toggle-btn ${isApi ? 'active' : ''}" data-source="api" title="Claude API reported stats (stats-cache.json)">
-                            <span class="toggle-icon">&#9729;</span>
+                    <div class="data-source-toggle" role="group" aria-label="Data source">
+                        <button class="toggle-btn ${isApi ? 'active' : ''}" data-source="api" title="Claude API reported stats (stats-cache.json)" aria-label="API data source" aria-pressed="${isApi}">
+                            <span class="toggle-icon" aria-hidden="true">&#9729;</span>
                         </button>
-                        <button class="toggle-btn ${!isApi ? 'active' : ''} ${!hasCalculatedData ? 'disabled' : ''}" data-source="calculated" title="Calculated from JSONL scan (includes all cache tokens)${!hasCalculatedData ? ' - No data yet. Run backfill or wait for daily scan.' : ''}">
-                            <span class="toggle-icon">&#128202;</span>
+                        <button class="toggle-btn ${!isApi ? 'active' : ''} ${!hasCalculatedData ? 'disabled' : ''}" data-source="calculated" title="Calculated from JSONL scan (includes all cache tokens)${!hasCalculatedData ? ' - No data yet. Run backfill or wait for daily scan.' : ''}" aria-label="Calculated data source${!hasCalculatedData ? ' (no data available)' : ''}" aria-pressed="${!isApi}" ${!hasCalculatedData ? 'aria-disabled="true"' : ''}>
+                            <span class="toggle-icon" aria-hidden="true">&#128202;</span>
                         </button>
                     </div>
                 </div>
@@ -406,11 +406,11 @@ class DashboardViewProvider {
                 ${barChart ? `
                 <div style="margin-top: 10px;">
                     <div class="section-header">
-                        <div class="section-title">${this._chartView === 'messages' ? 'Daily Messages' : this._chartView === 'cost' ? 'Daily Cost' : 'Daily Tokens'}</div>
+                        <div class="section-title" role="heading" aria-level="2">${this._chartView === 'messages' ? 'Daily Messages' : this._chartView === 'cost' ? 'Daily Cost' : 'Daily Tokens'}</div>
                         <div class="chart-toggle">
-                            <button class="toggle-btn ${this._chartView === 'messages' ? 'active' : ''}" data-view="messages" style="--toggle-color: #ff8800" title="Messages">💬</button>
-                            <button class="toggle-btn ${this._chartView === 'cost' ? 'active' : ''}" data-view="cost" style="--toggle-color: #2ed573" title="Cost">💵</button>
-                            <button class="toggle-btn ${this._chartView === 'tokens' ? 'active' : ''}" data-view="tokens" style="--toggle-color: #3498db" title="Tokens">🪙</button>
+                            <button class="toggle-btn ${this._chartView === 'messages' ? 'active' : ''}" data-view="messages" style="--toggle-color: #ff8800" title="Messages" aria-label="Show messages chart" aria-pressed="${this._chartView === 'messages'}"><span aria-hidden="true">💬</span></button>
+                            <button class="toggle-btn ${this._chartView === 'cost' ? 'active' : ''}" data-view="cost" style="--toggle-color: #2ed573" title="Cost" aria-label="Show cost chart" aria-pressed="${this._chartView === 'cost'}"><span aria-hidden="true">💵</span></button>
+                            <button class="toggle-btn ${this._chartView === 'tokens' ? 'active' : ''}" data-view="tokens" style="--toggle-color: #3498db" title="Tokens" aria-label="Show tokens chart" aria-pressed="${this._chartView === 'tokens'}"><span aria-hidden="true">🪙</span></button>
                         </div>
                     </div>
                     <div class="chart-container">${barChart}</div>
@@ -419,7 +419,7 @@ class DashboardViewProvider {
 
             <!-- Models Pie Chart -->
             <div class="section">
-                <div class="section-title">Models</div>
+                <div class="section-title" role="heading" aria-level="2">Models</div>
                 ${pieChart}
                 <div class="model-legend">
                     ${data.models.map(m => `
@@ -433,7 +433,7 @@ class DashboardViewProvider {
 
             <!-- Quick Fun Stats -->
             <div class="section">
-                <div class="section-title">Quick Stats</div>
+                <div class="section-title" role="heading" aria-level="2">Quick Stats</div>
                 <div class="fun-grid">
                     <div class="fun-item">
                         <div class="fun-value">${data.funStats.streak}</div>
@@ -464,7 +464,7 @@ class DashboardViewProvider {
 
             <!-- Today vs Yesterday -->
             <div class="section">
-                <div class="section-title">Today</div>
+                <div class="section-title" role="heading" aria-level="2">Today</div>
                 <div class="stat-row">
                     <div class="stat-box">
                         <div class="stat-value" style="color: #2ed573">${this.formatCost(data.today.cost)}</div>
@@ -506,7 +506,7 @@ class DashboardViewProvider {
 
             <!-- Cache Savings (Account Total) -->
             <div class="section">
-                <div class="section-title">Cache Efficiency (Account Total)</div>
+                <div class="section-title" role="heading" aria-level="2">Cache Efficiency (Account Total)</div>
                 <div class="info-list">
                     <div class="info-row">
                         <span>📊 Cache Hit Ratio</span>
@@ -529,7 +529,7 @@ class DashboardViewProvider {
 
             <!-- Cost by Model -->
             <div class="section">
-                <div class="section-title">Cost by Model</div>
+                <div class="section-title" role="heading" aria-level="2">Cost by Model</div>
                 ${data.models.map(m => `
                     <div class="info-row">
                         <span><span class="model-dot" style="background: ${m.color}; display: inline-block"></span> ${m.name}</span>
@@ -606,7 +606,7 @@ class DashboardViewProvider {
 
             <!-- Token Breakdown (Account Total) -->
             <div class="section">
-                <div class="section-title">Token Breakdown (Account Total)</div>
+                <div class="section-title" role="heading" aria-level="2">Token Breakdown (Account Total)</div>
                 <div class="info-list">
                     <div class="info-row">
                         <span>📥 Input Tokens</span>
@@ -629,7 +629,7 @@ class DashboardViewProvider {
 
             <!-- Activity Patterns -->
             <div class="section">
-                <div class="section-title">📊 Activity Patterns</div>
+                <div class="section-title" role="heading" aria-level="2">📊 Activity Patterns</div>
                 <div class="info-list">
                     <div class="info-row">
                         <span>🕐 Peak Hour</span>
@@ -656,7 +656,7 @@ class DashboardViewProvider {
 
             <!-- Request Types -->
             <div class="section">
-                <div class="section-title">📋 Request Types</div>
+                <div class="section-title" role="heading" aria-level="2">📋 Request Types</div>
                 <div class="info-list">
                     <div class="info-row">
                         <span>✨ Features</span>
@@ -755,17 +755,17 @@ class DashboardViewProvider {
         return `
             <!-- Achievements -->
             <div class="section">
-                <div class="section-title">🏅 Achievements</div>
+                <div class="section-title" role="heading" aria-level="2">🏅 Achievements</div>
                 <div class="achievements">
                     ${fs.achievements.length > 0
-            ? fs.achievements.map(a => `<span class="achievement-badge" title="${this.getAchievementDescription(a)}">${this.getAchievementIcon(a)} ${a}</span>`).join('')
+            ? fs.achievements.map(a => `<span class="achievement-badge" title="${this.getAchievementDescription(a)}" aria-label="${a}: ${this.getAchievementDescription(a)}"><span aria-hidden="true">${this.getAchievementIcon(a)}</span> ${a}</span>`).join('')
             : '<span class="muted">Keep coding to unlock achievements!</span>'}
                 </div>
             </div>
 
             <!-- Activity Heatmap -->
             <div class="section">
-                <div class="section-title">📅 Activity (Last 90 Days)</div>
+                <div class="section-title" role="heading" aria-level="2">📅 Activity (Last 90 Days)</div>
                 <div class="heatmap-container">
                     ${heatmap}
                 </div>
@@ -784,7 +784,7 @@ class DashboardViewProvider {
 
             <!-- Personality Profile -->
             <div class="section">
-                <div class="section-title">🧠 Personality Profile</div>
+                <div class="section-title" role="heading" aria-level="2">🧠 Personality Profile</div>
                 <div class="personality-grid">
                     <div class="personality-item">
                         <div class="personality-icon">🎩</div>
@@ -793,8 +793,8 @@ class DashboardViewProvider {
                                 <span class="personality-label">Politeness</span>
                                 <span class="personality-detail">${this.formatNumber(cs.pleaseCount + cs.thanksCount)} phrases</span>
                             </div>
-                            <div class="personality-bar">
-                                <div class="personality-fill" style="width: ${Math.min(100, fs.politenessScore * 10)}%; background: #2ed573"></div>
+                            <div class="personality-bar" role="progressbar" aria-valuenow="${Math.min(100, fs.politenessScore * 10).toFixed(0)}" aria-valuemin="0" aria-valuemax="100" aria-label="Politeness score ${Math.min(100, fs.politenessScore * 10).toFixed(0)}%">
+                                <div class="personality-fill" style="width: ${Math.min(100, fs.politenessScore * 10)}%; background: #2ed573" aria-hidden="true"></div>
                             </div>
                         </div>
                     </div>
@@ -805,8 +805,8 @@ class DashboardViewProvider {
                                 <span class="personality-label">Frustration</span>
                                 <span class="personality-detail">${fs.frustrationIndex < 1 ? 'Very calm' : fs.frustrationIndex < 3 ? 'Mostly calm' : fs.frustrationIndex < 5 ? 'Moderate' : 'Frustrated'}</span>
                             </div>
-                            <div class="personality-bar">
-                                <div class="personality-fill" style="width: ${Math.min(100, fs.frustrationIndex * 20)}%; background: #ff4757"></div>
+                            <div class="personality-bar" role="progressbar" aria-valuenow="${Math.min(100, fs.frustrationIndex * 20).toFixed(0)}" aria-valuemin="0" aria-valuemax="100" aria-label="Frustration level ${Math.min(100, fs.frustrationIndex * 20).toFixed(0)}%">
+                                <div class="personality-fill" style="width: ${Math.min(100, fs.frustrationIndex * 20)}%; background: #ff4757" aria-hidden="true"></div>
                             </div>
                         </div>
                     </div>
@@ -817,8 +817,8 @@ class DashboardViewProvider {
                                 <span class="personality-label">Curiosity</span>
                                 <span class="personality-detail">${this.formatNumber(cs.questionsAsked)} questions</span>
                             </div>
-                            <div class="personality-bar">
-                                <div class="personality-fill" style="width: ${Math.min(100, fs.curiosityScore * 10)}%; background: #f39c12"></div>
+                            <div class="personality-bar" role="progressbar" aria-valuenow="${Math.min(100, fs.curiosityScore * 10).toFixed(0)}" aria-valuemin="0" aria-valuemax="100" aria-label="Curiosity score ${Math.min(100, fs.curiosityScore * 10).toFixed(0)}%">
+                                <div class="personality-fill" style="width: ${Math.min(100, fs.curiosityScore * 10)}%; background: #f39c12" aria-hidden="true"></div>
                             </div>
                         </div>
                     </div>
@@ -827,7 +827,7 @@ class DashboardViewProvider {
 
             <!-- Expression Stats -->
             <div class="section">
-                <div class="section-title">💬 Expression</div>
+                <div class="section-title" role="heading" aria-level="2">💬 Expression</div>
                 <div class="stat-grid">
                     <div class="stat-mini">
                         <div class="stat-mini-value">${this.formatNumber(cs.curseWords)}</div>
@@ -850,12 +850,12 @@ class DashboardViewProvider {
 
             <!-- Mood & Sentiment -->
             <div class="section">
-                <div class="section-title">😊 Mood & Sentiment</div>
+                <div class="section-title" role="heading" aria-level="2">😊 Mood & Sentiment</div>
                 <div class="info-list">
                     <div class="info-row">
                         <span>Positivity</span>
-                        <div class="mini-bar">
-                            <div class="mini-bar-fill" style="width: ${positivityPct}%; background: #2ed573"></div>
+                        <div class="mini-bar" role="presentation">
+                            <div class="mini-bar-fill" style="width: ${positivityPct}%; background: #2ed573" aria-hidden="true"></div>
                         </div>
                         <span class="info-value">${positivityPct}%</span>
                     </div>
@@ -882,7 +882,7 @@ class DashboardViewProvider {
 
             <!-- Coding Activity -->
             <div class="section">
-                <div class="section-title">💻 Coding Activity</div>
+                <div class="section-title" role="heading" aria-level="2">💻 Coding Activity</div>
                 <div class="info-list">
                     <div class="info-row">
                         <span>📦 Code Blocks</span>
@@ -903,7 +903,7 @@ class DashboardViewProvider {
                 </div>
                 <div class="section-note">
                     Code stats collected from install date forward. For historical data,
-                    <a href="https://github.com/analyticendeavors/claude-usage-analytics#backfill-from-claudeai-export-optional">run the backfill script</a>
+                    <a href="https://github.com/analyticendeavors/claude-usage-analytics#backfill-from-claudeai-export-optional" aria-label="Run the backfill script to import historical Claude.ai data">run the backfill script</a>
                     with your Claude.ai data export.
                 </div>
             </div>
@@ -960,6 +960,10 @@ class DashboardViewProvider {
         .tab-btn:hover {
             color: var(--vscode-foreground);
             background: var(--vscode-list-hoverBackground);
+        }
+        .tab-btn:focus-visible {
+            outline: 2px solid var(--vscode-focusBorder);
+            outline-offset: -2px;
         }
         .tab-btn.active {
             color: var(--color-accent);
@@ -1288,6 +1292,10 @@ class DashboardViewProvider {
         .toggle-btn:hover {
             opacity: 0.8;
         }
+        .toggle-btn:focus-visible {
+            outline: 2px solid var(--vscode-focusBorder);
+            outline-offset: 2px;
+        }
         .toggle-btn.active {
             opacity: 1;
             background: var(--toggle-color, #ff8800);
@@ -1389,6 +1397,10 @@ class DashboardViewProvider {
             color: #000;
         }
         .btn:hover { opacity: 0.9; }
+        .btn:focus-visible {
+            outline: 2px solid var(--vscode-focusBorder);
+            outline-offset: 2px;
+        }
         .btn-secondary {
             background: var(--vscode-button-secondaryBackground);
             color: var(--vscode-button-secondaryForeground);
@@ -1472,29 +1484,37 @@ class DashboardViewProvider {
             color: var(--vscode-descriptionForeground);
             opacity: 0.8;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Tab Navigation -->
-    <div class="tab-nav">
-        <button class="tab-btn ${this._activeTab === 'overview' ? 'active' : ''}" data-tab="overview">Overview</button>
-        <button class="tab-btn ${this._activeTab === 'cost' ? 'active' : ''}" data-tab="cost">Cost</button>
-        <button class="tab-btn ${this._activeTab === 'messages' ? 'active' : ''}" data-tab="messages">Messages</button>
-        <button class="tab-btn ${this._activeTab === 'personality' ? 'active' : ''}" data-tab="personality">Personality</button>
+    <div class="tab-nav" role="tablist" aria-label="Dashboard tabs">
+        <button class="tab-btn ${this._activeTab === 'overview' ? 'active' : ''}" data-tab="overview" role="tab" aria-selected="${this._activeTab === 'overview'}" aria-controls="overview" id="tab-overview">Overview</button>
+        <button class="tab-btn ${this._activeTab === 'cost' ? 'active' : ''}" data-tab="cost" role="tab" aria-selected="${this._activeTab === 'cost'}" aria-controls="cost" id="tab-cost">Cost</button>
+        <button class="tab-btn ${this._activeTab === 'messages' ? 'active' : ''}" data-tab="messages" role="tab" aria-selected="${this._activeTab === 'messages'}" aria-controls="messages" id="tab-messages">Messages</button>
+        <button class="tab-btn ${this._activeTab === 'personality' ? 'active' : ''}" data-tab="personality" role="tab" aria-selected="${this._activeTab === 'personality'}" aria-controls="personality" id="tab-personality">Personality</button>
     </div>
 
     <!-- Tab Content -->
     <div class="tab-content">
-        <div class="tab-pane ${this._activeTab === 'overview' ? 'active' : ''}" id="overview">
+        <div class="tab-pane ${this._activeTab === 'overview' ? 'active' : ''}" id="overview" role="tabpanel" aria-labelledby="tab-overview">
             ${this.getOverviewTab(data)}
         </div>
-        <div class="tab-pane ${this._activeTab === 'cost' ? 'active' : ''}" id="cost">
+        <div class="tab-pane ${this._activeTab === 'cost' ? 'active' : ''}" id="cost" role="tabpanel" aria-labelledby="tab-cost">
             ${this.getCostTab(data)}
         </div>
-        <div class="tab-pane ${this._activeTab === 'messages' ? 'active' : ''}" id="messages">
+        <div class="tab-pane ${this._activeTab === 'messages' ? 'active' : ''}" id="messages" role="tabpanel" aria-labelledby="tab-messages">
             ${this.getMessagesTab(data)}
         </div>
-        <div class="tab-pane ${this._activeTab === 'personality' ? 'active' : ''}" id="personality">
+        <div class="tab-pane ${this._activeTab === 'personality' ? 'active' : ''}" id="personality" role="tabpanel" aria-labelledby="tab-personality">
             ${this.getPersonalityTab(data)}
         </div>
     </div>
@@ -1512,9 +1532,9 @@ class DashboardViewProvider {
         <div class="footer-title">Built by Analytic Endeavors</div>
         <div class="footer-subtitle">Claude Code usage analytics and insights</div>
         <div class="footer-links">
-            <a class="footer-link" href="https://github.com/analyticendeavors/claude-usage-analytics" target="_blank">GitHub</a>
-            <a class="footer-link" href="https://analyticendeavors.com/" target="_blank">Website</a>
-            <a class="footer-link" href="https://buymeacoffee.com/reidhavens" target="_blank">Donate</a>
+            <a class="footer-link" href="https://github.com/analyticendeavors/claude-usage-analytics" target="_blank" aria-label="Claude Usage Analytics on GitHub">GitHub</a>
+            <a class="footer-link" href="https://analyticendeavors.com/" target="_blank" aria-label="Analytic Endeavors website">Website</a>
+            <a class="footer-link" href="https://buymeacoffee.com/reidhavens" target="_blank" aria-label="Support the developer on Buy Me A Coffee">Donate</a>
         </div>
     </div>
 
@@ -1526,9 +1546,13 @@ class DashboardViewProvider {
             btn.addEventListener('click', () => {
                 const tab = btn.dataset.tab;
 
-                // Update button states
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                // Update button states + ARIA
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
 
                 // Update pane visibility
                 document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
