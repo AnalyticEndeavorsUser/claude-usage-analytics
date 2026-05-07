@@ -1,6 +1,6 @@
 # Claude Usage Analytics
 
-![Version](https://img.shields.io/badge/version-1.1.9-blue)
+![Version](https://img.shields.io/badge/version-1.1.11-blue)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.95%2B-007ACC)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
@@ -280,7 +280,7 @@ code --install-extension analyticendeavors.claude-usage-analytics
 Download the latest `.vsix` from the [Releases](https://github.com/analyticendeavors/claude-usage-analytics/releases) page and install manually:
 
 ```bash
-code --install-extension claude-usage-analytics-1.1.9.vsix
+code --install-extension claude-usage-analytics-1.1.11.vsix
 ```
 
 ---
@@ -380,7 +380,7 @@ Ensure Claude Code CLI is installed and you've used it at least once. The extens
 
 ### How accurate are the cost calculations?
 Costs use model-specific pricing from [modelPricing.json](modelPricing.json):
-- **Claude Opus 4.6 / 4.5**: $5/1M input, $25/1M output, $6.25/1M cache write, $0.50/1M cache read
+- **Claude Opus 4.7 / 4.6 / 4.5**: $5/1M input, $25/1M output, $6.25/1M cache write, $0.50/1M cache read
 - **Claude Opus 4.1 / 4 / 3**: $15/1M input, $75/1M output, $18.75/1M cache write, $1.50/1M cache read
 - **Claude Sonnet (all versions)**: $3/1M input, $15/1M output, $3.75/1M cache write, $0.30/1M cache read
 - **Claude Haiku 4.5**: $1/1M input, $5/1M output, $1.25/1M cache write, $0.10/1M cache read
@@ -393,18 +393,15 @@ Today's cost is calculated in real-time from conversation files for maximum accu
 Claude Code credentials may not be found. Ensure you're authenticated with `claude auth login`. On macOS, credentials are stored in the system Keychain — the first read may trigger a one-time Keychain access prompt; choose "Always Allow" so the widget can update without further prompts.
 
 ### How often does data refresh?
-- **Automatic**: Every 2 minutes
+- **Automatic**: Every 15 minutes by default. Configurable via the `claudeUsage.refreshIntervalSeconds` setting (0 = disabled, 10–3600 seconds).
 - **Manual**: Click refresh button or press `Ctrl+Alt+R`
 
 ### Why does "Today's" usage show $0.00 when I'm actively using Claude?
-The extension reads from Claude Code's cache file (`~/.claude/stats-cache.json`), which Claude Code updates periodically - **not in real-time**. Your current session data won't appear until Claude Code writes to the cache.
+The extension calculates today's cost in real-time from your local Claude Code conversation JSONL files (`~/.claude/projects/`), so this should rarely happen on 1.1.11+. If it does, click the refresh button or run "Scan Live Today Stats" from the command palette to force a fresh scan.
 
-**To force a cache update:**
-1. End your current Claude Code session (close the terminal or run `/exit`)
-2. Start a new session - this typically triggers a cache write
-3. Alternatively, wait for Claude Code's automatic cache update (varies by activity)
+If today's cost is still empty after a manual scan, your `~/.claude/projects/` directory may be missing or the JSONL files weren't written for that session. Verify with `ls ~/.claude/projects/` (or `dir %USERPROFILE%\.claude\projects` on Windows).
 
-The extension does calculate real-time today's cost by reading conversation JSONL files directly, but token counts and message stats rely on the cache.
+Token counts and message stats in the **Account Total** view rely on Claude Code's `stats-cache.json`, which Claude Code updates periodically rather than in real-time. The pie chart and streak supplement automatically from the live scan and SQLite history, so newly-released models and recent days show up even when that cache is stale.
 
 ### Is my data sent anywhere?
 No. All analysis happens locally. There are no network calls — the extension operates fully offline.
@@ -449,34 +446,24 @@ This extension is free and always will be. Source code is not publicly distribut
 
 ## Changelog
 
-### v1.1.0 (2025-12-22)
-- **SQLite persistence**: Your usage history is now preserved forever in a local SQLite database, surviving Claude Code's 30-day rolling window
-- **Historical data import**: On first install, automatically imports existing data from stats-cache.json
-- **Local history stats**: "Local History" totals now include full data from your local SQLite database, not just the last 30 days
-- **7 new achievements**: Token Titan (1M+ tokens), $100 Club, $500 Spender, $1K Whale, Refactor Pro, Refactor King, Weekend Warrior
-- **Export to CSV/JSON**: Export your usage data via dashboard button or view title menu
-- **Budget tracking**: New `dailyBudget` setting with status bar color coding (green/yellow/red)
-- **Cost alerts**: New `costAlertThreshold` setting triggers VS Code notifications when daily cost exceeds threshold
-- **Date range filter**: Filter dashboard stats by Last 7 days, Last 30 days, This Month, or All Time
-- **Session breakdown**: New section in Messages tab showing recent sessions with project, messages, tokens, and cost
-- **Activity heatmap**: GitHub-style contribution calendar on Personality tab showing last 90 days of activity
-- **Theme-aware colors**: All UI elements now adapt to light and dark VS Code themes
+Full release history is in [CHANGELOG.md](CHANGELOG.md). Latest highlights:
 
-### v1.0.3 (2025-12-21)
-- **Real-time today's cost**: Now reads directly from conversation JSONL files for accurate current-day statistics
-- **Subscription tier display**: Shows Max 20x, Max, Pro, or Free tier instead of rate limit percentages
-- **Fully offline**: Removed all network API calls — extension operates completely locally
-- **Improved tooltips**: All status bar widgets now show "Click to open [Tab Name]" for clarity
-- **Removed Limits section**: Dashboard no longer shows the obsolete rate limit progress bars
-- **Fixed credentials reading**: Now correctly reads from `~/.claude/.credentials.json`
+### v1.1.11 (2026-05-06)
+- **Opus 4.7 pricing** added at $5/$25 per MTok (verified against Anthropic docs).
+- **Pie chart now shows newly-released models** (e.g. Opus 4.7) immediately, even before Claude Code's `stats-cache.json` records them.
+- **Cache Savings stat** now uses per-model rates instead of a flat Sonnet estimate — accurate for Opus-heavy users.
+- **Streak no longer breaks to 0** when `stats-cache.json` is stale; supplemented from SQLite + live scan.
+- **Today's cost populates immediately on dashboard open** (was showing $0.00 until the 3-second scan fired).
+- **Scan completes in ~1s instead of 30s** on large histories via JSONL mtime filter; "Scan failed" toasts gone.
+- **Accessibility (WCAG 2.1 AA)**: full ARIA tab pattern, screen-reader labels on charts, keyboard focus rings, and `prefers-reduced-motion` support.
+- **Model name version parsing**: chart labels now show the actual model version (Opus 4.7, Sonnet 4.6, Haiku 3.5) instead of always saying "4.5".
 
-### v1.0.0 (2025-12-20)
-- Initial release
-- 7 status bar widgets with rich tooltips
-- 4-tab interactive dashboard
-- Cost analytics with model-specific pricing
-- Personality insights and achievements
-- Activity tracking and coding patterns
+### v1.1.10 (2026-05-06)
+- **macOS subscription tier fix** ([#7](https://github.com/AnalyticEndeavorsUser/claude-usage-analytics/issues/7)): credentials now read from the system Keychain via the `security` CLI, with the on-disk `.credentials.json` as a fallback.
+
+### v1.1.9 (2026-04-09)
+- **External additions sidecar**: import usage data from any external AI tool (Copilot CLI, Forge CLI, etc.) via `~/.claude/external-additions.json`.
+- **Pricing fixes**: Haiku 3.5 reverted to correct $0.80/$4, Opus 4.5 corrected to $5/$25, missing Opus 4.1 and Sonnet 4.5 entries added.
 
 ---
 
