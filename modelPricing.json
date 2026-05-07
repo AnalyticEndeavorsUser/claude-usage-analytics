@@ -8,6 +8,7 @@
     "claude-haiku-4-5-20251001": { "input": 1.00, "output": 5.00 },
     "claude-3-5-haiku-20241022": { "input": 0.80, "output": 4.00 },
     "claude-3-haiku-20240307": { "input": 0.25, "output": 1.25 },
+    "claude-opus-4-7": { "input": 5.00, "output": 25.00 },
     "claude-opus-4-6": { "input": 5.00, "output": 25.00 },
     "claude-opus-4-5-20251101": { "input": 5.00, "output": 25.00 },
     "claude-opus-4-1-20250805": { "input": 15.00, "output": 75.00 },

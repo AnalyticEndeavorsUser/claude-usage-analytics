@@ -132,7 +132,7 @@ This extension prioritizes your privacy:
 - `~/.claude/analytics.db` — SQLite database preserving your full usage history (managed by this extension)
 - `~/.claude/conversation-stats-cache.json` — Personality and code stats (updated by backfill script)
 - `~/.claude/projects/*/` — Conversation history for personality analysis and real-time today's cost
-- `~/.claude/.credentials.json` — Subscription tier information (read-only)
+- `~/.claude/.credentials.json` — Subscription tier information (read-only). On macOS, credentials live in the system Keychain (service `Claude Code-credentials`) and are read via the `security` CLI; macOS may prompt once to allow access.
 
 > **Note**: Today's stats may show $0.00 if Claude Code hasn't updated its cache yet. End your session or wait for the automatic cache update to see current data.
 
@@ -369,7 +369,7 @@ claude-usage-analytics/
 | **DashboardViewProvider** | Renders the 4-tab webview with real-time data |
 | **getUsageData()** | Parses `stats-cache.json` and calculates all metrics |
 | **getTodayRealTimeUsage()** | Reads JSONL files for accurate today's cost |
-| **getSubscriptionInfo()** | Reads subscription tier from credentials file |
+| **getSubscriptionInfo()** | Reads subscription tier from credentials (file on Linux/Windows, Keychain on macOS) |
 
 ---
 
@@ -390,7 +390,7 @@ Costs use model-specific pricing from [modelPricing.json](modelPricing.json):
 Today's cost is calculated in real-time from conversation files for maximum accuracy.
 
 ### Why does the subscription widget show "N/A"?
-Claude Code credentials may not be found. Ensure you're authenticated with `claude auth login`.
+Claude Code credentials may not be found. Ensure you're authenticated with `claude auth login`. On macOS, credentials are stored in the system Keychain — the first read may trigger a one-time Keychain access prompt; choose "Always Allow" so the widget can update without further prompts.
 
 ### How often does data refresh?
 - **Automatic**: Every 2 minutes
@@ -427,7 +427,7 @@ No. This extension specifically reads Claude Code's local statistics files. It's
 
 1. Re-authenticate: `claude auth login`
 2. Restart VS Code
-3. Check credentials file exists: `ls ~/.claude/.credentials.json`
+3. Check credentials file exists: `ls ~/.claude/.credentials.json` (on macOS, run `security find-generic-password -s "Claude Code-credentials"` instead — credentials live in the Keychain)
 
 ### Dashboard not loading
 

@@ -2,6 +2,27 @@
 
 All notable changes to the Claude Usage Analytics extension will be documented in this file.
 
+## [1.1.11] - 2026-05-06
+
+### Added
+- **Opus 4.7 pricing** - Added `claude-opus-4-7` to model pricing table at $5/$25 per MTok (verified against Anthropic pricing docs).
+- **Accessibility (WCAG 2.1 AA) improvements** - ARIA tab pattern on dashboard tabs (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`); SVG charts (bar, heatmap, pie) now have `role="img"` with descriptive `aria-label`; chart and data-source toggle buttons expose `aria-label` and `aria-pressed`; personality bars expose `role="progressbar"` with `aria-valuenow/min/max`; achievement badges and footer links have screen-reader-friendly `aria-label`s; section titles expose `role="heading" aria-level="2"`; visible `:focus-visible` outlines on tabs, toggles, and buttons; `prefers-reduced-motion` honoured.
+
+### Fixed
+- **Newly-released models invisible in pie chart** - The models breakdown was built only from Claude Code's `stats-cache.json`, which lags new model IDs. The pie chart now supplements with models from today's live JSONL scan, so models like Opus 4.7 appear immediately.
+- **Model name version parsing** - `formatModelName()` no longer hardcodes "Opus 4.5" / "Sonnet 4.5"; it now extracts MAJOR.MINOR from the model id (e.g. Opus 4.7, Sonnet 4.6, Sonnet 3.5).
+- **Cache savings used Sonnet rate for all models** - The Cache Savings stat now accumulates per-model savings (`input - cacheRead`) instead of a flat Sonnet estimate, so Opus-heavy users see accurate savings.
+- **Today's cost showed $0.00 on extension startup** - Dashboard now hydrates `~/.claude/live-today-stats.json` synchronously on activation (when its date matches today) before the 3-second delayed scan fires.
+- **Streak broke when stats-cache.json was stale** - `daysWithActivity` is now supplemented from SQLite `model_usage` records and today's live scan, so the streak no longer drops to 0 when Claude Code hasn't refreshed its cache.
+- **"Scan failed" on large histories** - `tools/scan-today.js` now stats each JSONL file and skips ones whose mtime isn't today, dropping scan time from ~28s to ~1s on 4,400+ file histories. Scan execFile timeout raised from 30s to 60s as a safety margin.
+- **Opus 4.7 fell through to legacy pricing** - `getPricingForModel()` (in `dataProvider.ts` and `database.ts`) now matches `4-7` alongside `4-5`/`4-6` for the new Opus pricing tier.
+- **"1 msgs" pluralisation** - Longest Session stat now says "1 msg" / "N msgs".
+
+## [1.1.10] - 2026-05-06
+
+### Fixed
+- **Subscription tier shows "N/A" on macOS** ([#7](https://github.com/AnalyticEndeavorsUser/claude-usage-analytics/issues/7)) - Claude Code on macOS stores credentials in the system Keychain (service `Claude Code-credentials`) rather than `~/.claude/.credentials.json`. The extension now reads from the Keychain via the `security` CLI on macOS, falling back to the on-disk file if no Keychain entry exists. The first read may trigger a one-time Keychain access prompt.
+
 ## [1.1.9] - 2026-04-09
 
 ### Added
